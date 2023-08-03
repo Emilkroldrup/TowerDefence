@@ -2,24 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMovement : MonoBehaviour {
-
-    private float moveSpeed = 10f;
-    private Vector3 moveVector;
-
-    void Start()
-    {
-        moveVector = new Vector3(0, 0, 0);
-    }
+public class CameraMovement : MonoBehaviour
+{
+    [Header("Movement Boundaries")]
+    public Vector3 min;
+    public Vector3 max;
+    [Header("Movement Speed")]
+    public float speed = 10.0f;
 
     void Update()
     {
-        moveVector.x = Input.GetAxisRaw("Horizontal");
-        moveVector.z = Input.GetAxisRaw("Vertical");
+        float xInput = Input.GetAxis("Horizontal");
+        float zInput = Input.GetAxis("Vertical");
 
-        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0) {
-            transform.position += moveSpeed * moveVector * Time.deltaTime;
-        }
+        Vector3 move = new Vector3(xInput, 0, zInput) * speed * Time.deltaTime;
+        Vector3 newPosition = transform.position + move;
 
-    } 
+        newPosition.x = Mathf.Clamp(newPosition.x, min.x, max.x);
+        newPosition.z = Mathf.Clamp(newPosition.z, min.z, max.z);
+
+        transform.position = newPosition;
+    }
 }
